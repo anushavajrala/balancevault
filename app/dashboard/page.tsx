@@ -114,9 +114,9 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <button onClick={() => signOut({ callbackUrl: "/login" })} className="w-full text-sm bg-red-500/10 text-red-400 border border-red-500/20 py-2 rounded-lg hover:bg-red-500/20 transition-all">
-            Terminate Session
-          </button>
+          <button onClick={() => signOut({ redirect: true, callbackUrl: "https://balancevault-megl.vercel.app/login" })} className="w-full text-sm bg-red-500/10 text-red-400 border border-red-500/20 py-2 rounded-lg hover:bg-red-500/20 transition-all">
+  Terminate Session
+</button>
         </div>
       </aside>
 
