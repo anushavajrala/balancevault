@@ -79,15 +79,12 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ message: "User created", user }, { status: 201 });
-  } catch (error) {
-    if (error instanceof RateLimitUnavailableError) {
-      console.error("REGISTRATION RATE LIMIT UNAVAILABLE:", error.message);
-      return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 503 });
-    }
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return NextResponse.json({ error: "Email or username is already in use" }, { status: 409 });
-    }
+  }    catch (error: any) {
     console.error("REGISTRATION ERROR:", error);
-    return NextResponse.json({ error: "Failed to create account" }, { status: 500 });
+    // Return the specific error message so we can see it on the screen
+    return NextResponse.json({ 
+      error: error.message || "Something went wrong",
+      code: error.code || "UNKNOWN"
+    }, { status: 500 });
   }
 }
