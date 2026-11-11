@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  username  String    @unique
+  email     String    @unique
+  phone     String?
+  password  String
+  role      Role      @default(USER)
+  accounts  Account[]
+  createdAt DateTime  @default(now())
+
+  @@map("user")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                String        @id @default(uuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id])
+  balance           Float         @default(0.0)
+  status            Status        @default(PENDING)
+  ledger            Transaction[]
+  receivedTransfers Transaction[] @relation("TransferReceiver")
+  createdAt         DateTime      @default(now())
+
+  @@map("account")
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Transaction {
+  id                String   @id @default(uuid())
+  accountId         String
+  account           Account  @relation(fields: [accountId], references: [id])
+  receiverAccountId String?
+  receiverAccount   Account? @relation("TransferReceiver", fields: [receiverAccountId], references: [id])
+  amount            Float
+  type              TxType
+  status            TxStatus @default(PENDING)
+  previousHash      String?
+  currentHash       String   @unique
+  performedBy       String
+  createdAt         DateTime @default(now())
+
+  @@map("transaction")
+}
+
+enum TxType {
+  DEPOSIT
+  WITHDRAW
+  TRANSFER
+}
+
+enum TxStatus {
+  PENDING
+  COMPLETED
+  REJECTED
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  userId    String
+  details   String
+  createdAt DateTime @default(now())
+
+  @@map("auditlog")
+}
