@@ -114,7 +114,12 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <button onClick={() => signOut({ redirectTo: `${window.location.origin}/login` })} className="w-full text-sm bg-red-500/10 text-red-400 border border-red-500/20 py-2 rounded-lg hover:bg-red-500/20 transition-all">
+          <button onClick={() => {
+  // Clear the cookie manually and hard reload the page
+  document.cookie = "next-auth.session-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "__Secure-next-auth.session-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  window.location.href = "/login";
+}} className="w-full text-sm bg-red-500/10 text-red-400 border border-red-500/20 py-2 rounded-lg hover:bg-red-500/20 transition-all">
   Terminate Session
 </button>
         </div>
